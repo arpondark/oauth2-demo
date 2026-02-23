@@ -1,6 +1,7 @@
 package site.shazan.oauth2_demo.servie;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -13,13 +14,12 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.security.oauth2.jwt.JwtDecoder;
 import org.springframework.stereotype.Service;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @Data
+@EqualsAndHashCode(callSuper = false)
 public class CustomOidcService extends OidcUserService  {
     private final JwtDecoder jwtDecoder;
 
@@ -34,9 +34,10 @@ public class CustomOidcService extends OidcUserService  {
         String accessToken = userRequest.getAccessToken().getTokenValue();
         Set<GrantedAuthority> keyloakRoles= extractRoles(accessToken);
         keyloakRoles.addAll(defaultUser.getAuthorities());
-        return DefaultOidcUser(keyloakRoles,defaultUser.getIdToken(),defaultUser.getUserInfo());
+        return new DefaultOidcUser(keyloakRoles,defaultUser.getIdToken(),defaultUser.getUserInfo());
     }
 
+    @SuppressWarnings("unchecked")
     private Set<GrantedAuthority> extractRoles(String accessToken) {
        Jwt jwt = jwtDecoder.decode(accessToken);
        Map<String, Object> resourceAccess = jwt.getClaim("resource_access");
@@ -52,8 +53,8 @@ public class CustomOidcService extends OidcUserService  {
            return Collections.emptySet();
        }
        return roles.stream()
-               .map(String role -> new SimpleGrantedAuthority("ROLE_"+role.toUpperCase()))
-               .collect(Collections.toSet());
+               .map(role -> new SimpleGrantedAuthority("ROLE_"+role.toUpperCase()))
+               .collect(Collectors.toSet());
 
     }
 }

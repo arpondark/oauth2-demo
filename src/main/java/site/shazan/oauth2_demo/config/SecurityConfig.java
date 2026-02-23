@@ -20,7 +20,7 @@ private final CustomOidcService customOidcService;
 
 
     @Bean
-    public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
+    public SecurityFilterChain securityFilterChain(HttpSecurity http) {
         OidcClientInitiatedLogoutSuccessHandler handler = new OidcClientInitiatedLogoutSuccessHandler(clientRegistrationRepository);
         handler.setPostLogoutRedirectUri("{baseUrl}");
 
@@ -32,10 +32,12 @@ private final CustomOidcService customOidcService;
                     .requestMatchers("/admin").hasRole("ADMIN")
                     .anyRequest().authenticated()
             )
-            .oauth2Login(oauth2->oauth2.loginPage("/login")
-            .defaultSuccessUrl("/home", true))
-                .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcService))
-                .logout(logout -> logout.logoutSuccessHandler(handler));
+            .oauth2Login(oauth2 -> oauth2
+                    .loginPage("/login")
+                    .defaultSuccessUrl("/home", true)
+                    .userInfoEndpoint(userInfo -> userInfo.oidcUserService(customOidcService))
+            )
+            .logout(logout -> logout.logoutSuccessHandler(handler));
 
         return http.build();
     }
