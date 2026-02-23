@@ -39,9 +39,9 @@ src/main/java/com/example/demo
 ## Run Keycloak Using Docker
 
 Run the following command:
-
+```bash
 docker run -d --name keycloak -p 9090:8080 -e KEYCLOAK_ADMIN=admin -e KEYCLOAK_ADMIN_PASSWORD=admin quay.io/keycloak/keycloak:latest start-dev
-
+```
 Access Keycloak Admin Console:
 
 http://localhost:9090

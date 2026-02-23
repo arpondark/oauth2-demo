@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>User Dashboard</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-slate-50 text-slate-900">
+<main class="min-h-screen flex items-center justify-center p-6">
+    <section class="w-full max-w-2xl rounded-2xl border border-slate-100 bg-white p-8 shadow-lg">
+        <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div>
+                <h1 class="text-3xl font-semibold">User Dashboard</h1>
+                <p class="mt-1 text-slate-600">Restricted to ROLE_USER.</p>
+            </div>
+            <div class="flex items-center gap-3">
+                <a class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50"
+                   th:href="@{/home}">Home</a>
+                <form th:action="@{/logout}" method="post">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                    <button type="submit"
+                            class="rounded-lg border border-slate-200 px-4 py-2 text-sm font-medium text-slate-700 hover:bg-slate-50">
+                        Logout
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="mt-6 grid gap-4 sm:grid-cols-2">
+            <div class="rounded-xl border border-slate-100 p-4">
+                <p class="text-sm text-slate-500">Signed in as</p>
+                <p class="mt-1 text-lg font-medium" th:text="${#authentication?.name}">username</p>
+            </div>
+            <div class="rounded-xl border border-slate-100 p-4">
+                <p class="text-sm text-slate-500">Role</p>
+                <p class="mt-1 text-lg font-medium">ROLE_USER</p>
+            </div>
+        </div>
+    </section>
+</main>
+</body>
+</html>
+
